@@ -1,0 +1,30 @@
+require('dotenv').config();
+const { Client, IntentsBitField } = require('discord.js');
+const client = new Client({
+    intents:[
+        IntentsBitField.Flags.Guilds,
+        IntentsBitField.Flags.GuildMembers,
+        IntentsBitField.Flags.GuildMessages,
+        IntentsBitField.Flags.MessageContent
+    ]
+})
+
+client.on('clientReady',(c)=>{
+    console.log(`\n\n|-------------------------------@${c.user.username}✅ is online-------------------------------|`);
+})
+
+client.on('messageCreate',(message)=>{
+    if(message.author.bot){//true if author of message is bot
+        return;
+    }
+
+
+    if(message.content.toLowerCase() == 'hey'){
+        message.reply(`Hey ${message.author.globalName}!!!\nHow are you?`)
+    }
+    if(message.content.toLowerCase().includes('rohit')){
+        message.reply(':rofl: Rohit = KakkaTheetam')
+    }
+})
+
+client.login(process.env.BOT_TOKEN);
