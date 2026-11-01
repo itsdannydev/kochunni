@@ -1,4 +1,6 @@
-require('dotenv').config();
+const isDev = process.env.NODE_ENV === 'development';
+// dev uses .env.dev (dev bot token + test channel), prod uses .env / Render env vars
+require('dotenv').config({ path: isDev ? '.env.dev' : '.env' });
 const { Client, IntentsBitField } = require('discord.js');
 const client = new Client({
     intents:[
@@ -18,6 +20,12 @@ client.on('messageCreate',(message)=>{
         return;
     }
 
+    // Dev bot: only respond in the bot testing channel.
+    // Live bot: never respond in the bot testing channel.
+    const inTestChannel = message.channelId === process.env.DEV_CHANNEL_ID;
+    if(isDev !== inTestChannel){
+        return;
+    }
 
     if(message.content.toLowerCase() == 'hey'){
         message.reply(`Hey ${message.author.globalName}!!!\nHow are you?`)
