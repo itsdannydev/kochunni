@@ -1,13 +1,13 @@
 const isDev = process.env.NODE_ENV === 'development';
-// dev uses .env.dev (dev bot token + test channel), live uses .env / Render env vars
-require('dotenv').config({ path: isDev ? '.env.dev' : '.env', quiet: true });
+require('dotenv').config({ quiet: true }); // one .env for both bots (Render uses its own env vars)
 
 module.exports = {
     isDev,
-    token: process.env.BOT_TOKEN,
-    clientId: process.env.CLIENT_ID,       // needed only to register slash commands
-    guildId: process.env.GUILD_ID,         // optional: register slash commands to one server (instant)
-    testChannelId: process.env.DEV_CHANNEL_ID,
+    // dev run uses the DEV_* values, live run uses the plain ones
+    token: isDev ? process.env.DEV_BOT_TOKEN : process.env.BOT_TOKEN,
+    clientId: isDev ? process.env.DEV_CLIENT_ID : process.env.CLIENT_ID, // only needed to register slash commands
+    guildId: process.env.GUILD_ID,                                       // the one server; slash commands register there instantly
+    testChannelId: process.env.BOT_TESTING_CHANNEL_ID,
     prefix: process.env.PREFIX || '!',
     port: process.env.PORT || 3000,
 };
