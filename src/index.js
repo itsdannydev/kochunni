@@ -27,4 +27,18 @@ client.on('messageCreate',(message)=>{
     }
 })
 
+// Health check server (for Render + UptimeRobot)
+const http = require('http');
+const PORT = process.env.PORT || 3000;
+http.createServer((req, res) => {
+    if (req.url === '/health') {
+        const healthy = client.isReady();
+        res.writeHead(healthy ? 200 : 503, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ status: healthy ? 'ok' : 'discord not ready', uptime: process.uptime() }));
+    } else {
+        res.writeHead(200);
+        res.end('Bot is running');
+    }
+}).listen(PORT, () => console.log(`Health server listening on port ${PORT}`));
+
 client.login(process.env.BOT_TOKEN);
